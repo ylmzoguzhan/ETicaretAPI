@@ -1,4 +1,5 @@
 ﻿using ETicaretAPI.Domain.Entities;
+using ETicaretAPI.Domain.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,18 @@ namespace ETicaretAPI.Persistence.Contexts
         public ETicaretAPIDbCoxtext(DbContextOptions options) : base(options)
         {
 
+        }
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var datas = ChangeTracker.Entries<BaseEntity>();
+            foreach (var data in datas)
+            {
+                if(data.State==EntityState.Modified)
+                    data.Entity.ModifiedDate = DateTime.Now;
+                else if(data.State==EntityState.Added)
+                    data.Entity.CreatedDate = DateTime.Now;
+            }
+            return await base.SaveChangesAsync(cancellationToken);
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
