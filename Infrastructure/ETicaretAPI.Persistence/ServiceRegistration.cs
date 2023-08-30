@@ -7,6 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using ETicaretAPI.Application.Repositories.Customer;
+using ETicaretAPI.Persistence.Repositories.Customer;
+using ETicaretAPI.Application.Repositories.Order;
+using ETicaretAPI.Persistence.Repositories.Order;
+using ETicaretAPI.Application.Repositories.Product;
+using ETicaretAPI.Persistence.Repositories.Product;
 
 namespace ETicaretAPI.Persistence
 {
@@ -15,6 +21,15 @@ namespace ETicaretAPI.Persistence
         public static void AddPersistenceServices(this IServiceCollection services)
         {
             services.AddDbContext<ETicaretAPIDbCoxtext>(options => options.UseSqlServer(Configuration.ConnectionString));
+            
+            services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
+            services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
+
+            services.AddScoped<IOrderReadRepository, OrderReadRepository>();
+            services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
+
+            services.AddScoped<IProductReadRepository, ProductReadRepository>();
+            services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
         }
     }
 }
