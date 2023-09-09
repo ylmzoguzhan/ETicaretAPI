@@ -13,6 +13,10 @@ using ETicaretAPI.Application.Repositories.Order;
 using ETicaretAPI.Persistence.Repositories.Order;
 using ETicaretAPI.Application.Repositories.Product;
 using ETicaretAPI.Persistence.Repositories.Product;
+using ETicaretAPI.Application.Repositories.File;
+using ETicaretAPI.Persistence.Repositories.File;
+using ETicaretAPI.Application.Repositories.ProductImageFİle;
+using ETicaretAPI.Persistence.Repositories.ProductImageFile;
 
 namespace ETicaretAPI.Persistence
 {
@@ -30,6 +34,13 @@ namespace ETicaretAPI.Persistence
 
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
+
+            services.AddScoped<IFileReadRepository, FileReadRepository>();
+            services.AddScoped<IFileWriteRepository, FileWriteRepository>();
+
+
+            services.AddScoped<IProductImageFileReadRepository, ProductImageFileReadRepository>();
+            services.AddScoped<IProductImageFileWriteRepository, ProductImageFileWriteRepository>();
         }
     }
 }

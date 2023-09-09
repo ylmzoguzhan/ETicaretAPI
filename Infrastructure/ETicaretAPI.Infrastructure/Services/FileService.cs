@@ -29,7 +29,7 @@ namespace ETicaretAPI.Infrastructure.Services
                 var newFileName = await FileRenameAsync(uploadPath, file.Name);
                 var result = await SaveAsync($"{uploadPath}\\{newFileName}", file);
                 results.Add(result);
-                datas.Add((newFileName, $"{uploadPath}\\{newFileName}"));
+                datas.Add((newFileName, $"{directory}\\{newFileName}"));
             }
             if (results.TrueForAll(r => r.Equals(true)))
                 return datas;
