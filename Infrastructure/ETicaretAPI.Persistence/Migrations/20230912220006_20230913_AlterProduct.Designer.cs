@@ -4,6 +4,7 @@ using ETicaretAPI.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETicaretAPI.Persistence.Migrations
 {
     [DbContext(typeof(ETicaretAPIDbCoxtext))]
-    partial class ETicaretAPIDbCoxtextModelSnapshot : ModelSnapshot
+    [Migration("20230912220006_20230913_AlterProduct")]
+    partial class _20230913_AlterProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,13 +162,13 @@ namespace ETicaretAPI.Persistence.Migrations
 
             modelBuilder.Entity("ProductProductImageFile", b =>
                 {
-                    b.Property<long>("ProductsID")
+                    b.Property<long>("ProductID")
                         .HasColumnType("bigint");
 
                     b.Property<long>("imagesID")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ProductsID", "imagesID");
+                    b.HasKey("ProductID", "imagesID");
 
                     b.HasIndex("imagesID");
 
@@ -209,7 +212,7 @@ namespace ETicaretAPI.Persistence.Migrations
                 {
                     b.HasOne("ETicaretAPI.Domain.Entities.Product", null)
                         .WithMany()
-                        .HasForeignKey("ProductsID")
+                        .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

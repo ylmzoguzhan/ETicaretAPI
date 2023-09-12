@@ -21,7 +21,7 @@ namespace ETicaretAPI.API.Controllers
         readonly private IFileReadRepository _fileReadRepository;
         readonly private IFileWriteRepository _fileWriteRepository;
         readonly private IProductImageFileReadRepository _productImageFileReadRepository;
-        readonly private IProductImageFileWriteRepository _productImageFileWriteReadRepository;
+        readonly private IProductImageFileWriteRepository _productImageFileWriteRepository;
         readonly IStorageService _storageService;
         public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, IWebHostEnvironment webHostEnvironment, IFileReadRepository fileReadRepository, IFileWriteRepository fileWriteRepository, IProductImageFileReadRepository productImageFileReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository, IStorageService storageService)
         {
@@ -31,7 +31,7 @@ namespace ETicaretAPI.API.Controllers
             _fileReadRepository = fileReadRepository;
             _fileWriteRepository = fileWriteRepository;
             _productImageFileReadRepository = productImageFileReadRepository;
-            _productImageFileWriteReadRepository = productImageFileWriteRepository;
+            _productImageFileWriteRepository = productImageFileWriteRepository;
             _storageService = storageService;
 
         }
@@ -92,16 +92,18 @@ namespace ETicaretAPI.API.Controllers
             return Ok();
         }
         [HttpPost("[action]")]
-        public async Task<IActionResult> Upload()
+        public async Task<IActionResult> Upload(long id=0)
         {
-            var datas =await _storageService.UploadAsync("files", Request.Form.Files);
-            await _productImageFileWriteReadRepository.AddRangeAsync(datas.Select(d => new ProductImageFile()
+          List<(string fileName, string pathOrContainerName)> result =  await _storageService.UploadAsync("product-images", Request.Form.Files);
+            var product = await _productReadRepository.GetByIdAsync(id);
+            await _productImageFileWriteRepository.AddRangeAsync(result.Select(op => new ProductImageFile
             {
-                FileName = d.fileName,
-                Path = d.pathOrContainerName,
-                Storage = "Azure"
+                FileName = op.fileName,
+                Path = op.pathOrContainerName,
+                Storage = "Azure",
+                Products = new List<Product>() { product}
             }).ToList());
-            await _productImageFileWriteReadRepository.SaveAsync();
+            await _productImageFileWriteRepository.SaveAsync();
             return Ok();
         }
     }
