@@ -7,6 +7,7 @@ using ETicaretAPI.Application.ViewModels.Products;
 using ETicaretAPI.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ETicaretAPI.API.Controllers
@@ -23,7 +24,8 @@ namespace ETicaretAPI.API.Controllers
         readonly private IProductImageFileReadRepository _productImageFileReadRepository;
         readonly private IProductImageFileWriteRepository _productImageFileWriteRepository;
         readonly IStorageService _storageService;
-        public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, IWebHostEnvironment webHostEnvironment, IFileReadRepository fileReadRepository, IFileWriteRepository fileWriteRepository, IProductImageFileReadRepository productImageFileReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository, IStorageService storageService)
+        readonly IConfiguration _configuration;
+        public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, IWebHostEnvironment webHostEnvironment, IFileReadRepository fileReadRepository, IFileWriteRepository fileWriteRepository, IProductImageFileReadRepository productImageFileReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository, IStorageService storageService, IConfiguration configuration)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
@@ -33,7 +35,7 @@ namespace ETicaretAPI.API.Controllers
             _productImageFileReadRepository = productImageFileReadRepository;
             _productImageFileWriteRepository = productImageFileWriteRepository;
             _storageService = storageService;
-
+            _configuration = configuration;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] Pagination pagination)
@@ -103,6 +105,26 @@ namespace ETicaretAPI.API.Controllers
                 Storage = "Azure",
                 Products = new List<Product>() { product}
             }).ToList());
+            await _productImageFileWriteRepository.SaveAsync();
+            return Ok();
+        }
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> GetImages(long id)
+        {
+            var product = await _productReadRepository.Table.Include(p => p.images).FirstOrDefaultAsync(p => p.ID == id);
+            return Ok(product.images.Select(op=> new
+            {
+                Path = op.Path = $"{_configuration["BaseStorageUrl"]}/{op.Path}",
+                op.FileName,
+                op.ID
+            }));
+        }
+        [HttpDelete("[action]/{id}")]
+        public async Task<IActionResult> DeleteImage(long id, long imageId)
+        {
+            var product = await _productReadRepository.Table.Include(p => p.images).FirstOrDefaultAsync(p => p.ID == id);
+           var image = product.images.FirstOrDefault(p => p.ID == imageId);
+            product.images.Remove(image);
             await _productImageFileWriteRepository.SaveAsync();
             return Ok();
         }
