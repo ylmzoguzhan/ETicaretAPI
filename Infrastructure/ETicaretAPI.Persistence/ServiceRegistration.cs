@@ -17,6 +17,8 @@ using ETicaretAPI.Application.Repositories.File;
 using ETicaretAPI.Persistence.Repositories.File;
 using ETicaretAPI.Application.Repositories.ProductImageFİle;
 using ETicaretAPI.Persistence.Repositories.ProductImageFile;
+using ETicaretAPI.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace ETicaretAPI.Persistence
 {
@@ -25,7 +27,7 @@ namespace ETicaretAPI.Persistence
         public static void AddPersistenceServices(this IServiceCollection services)
         {
             services.AddDbContext<ETicaretAPIDbCoxtext>(options => options.UseSqlServer(Configuration.ConnectionString));
-            
+            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<ETicaretAPIDbCoxtext>().AddDefaultTokenProviders();
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
 
