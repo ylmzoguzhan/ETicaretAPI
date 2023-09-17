@@ -1,16 +1,14 @@
-﻿using ETicaretAPI.Application.DTOs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretAPI.Application.Features.Commands.AppUsers.LoginUser
+namespace ETicaretAPI.Application.DTOs
 {
-    public class LoginUserCommandResponse
+    public class Token
     {
         public string AccessToken { get; set; }
         public DateTime Expiration { get; set; }
-        public string Message { get; set; }
     }
 }
